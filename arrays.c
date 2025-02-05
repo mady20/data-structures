@@ -130,7 +130,7 @@ void search(Array* a, int target){
             return;
         }
     }
-    printf("%d not found!\n");
+    printf("%d not found!\n",target);
 };
 void merge(Array* a, Array* b){
     if(a->capacity < (a->length + b->length)){
@@ -165,6 +165,7 @@ Array* concat(Array* a, Array* b){
         insert(result, b->array[i]);
     }
     result->length += b->length;
+    return result;
 };
 
 
@@ -187,11 +188,20 @@ void freeArray(Array* a){
 int main(void){
     Array* a = (Array*) malloc(sizeof(Array));
     memset(a, 0, sizeof(Array));
+    Array* b = (Array*) malloc(sizeof(Array));
+    memset(b, 0, sizeof(Array));
     init(a, 5);
+    init(b, 3);
     for(int i = 1; i <= 5; i++){
         insert(a,i);
     }
+     for(int i = 6; i <= 8; i++){
+        insert(b,i);
+    }
     print(a);
+    print(b);
+    Array* result = concat(a,b);
+    print(result);
     freeArray(a);
     return 0;
 }
