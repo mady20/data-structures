@@ -29,10 +29,6 @@ void freeArray(Array*);
 /**************************************************************************/
 
 void init(Array* a, int capacity){
-    if (a->array != NULL){
-        fprintf(stderr, "Array is already initialized!\n");
-        return;
-    }
     if (capacity <= 0) {
         fprintf(stderr, "Capacity must be greater than 0!\n");
         exit(1);
@@ -50,6 +46,7 @@ void init(Array* a, int capacity){
 
 
 void insert(Array* a, int value) {
+
     if (a == NULL || a->array == NULL) {
         fprintf(stderr, "Array is not initialized!\n");
         exit(1);
@@ -76,7 +73,6 @@ void insertAt(Array* a, int index , int value){
         freeArray(a);
         exit(1);
     }
-
     if(a->length == a->capacity){
         a->capacity *= 2;
         int* tmp = (int*) realloc(a->array, a->capacity * sizeof(int));
@@ -89,7 +85,6 @@ void insertAt(Array* a, int index , int value){
         memset(a->array + a->length, 0, (a->capacity - a->length) * sizeof(int));
         a->array = tmp;
     }
-
     for(int i = a->length - 1; i >= index; i--){
         a->array[i+1] = a->array[i];
     }
@@ -136,6 +131,8 @@ void search(Array* a, int target){
     }
     printf("%d not found!\n",target);
 };
+
+
 void merge(Array* a, Array* b){
     if(a->capacity < (a->length + b->length)){
         a->capacity += b->length;
@@ -198,6 +195,8 @@ int main(void){
     }
     print(a);
     init(a,3);
+    print(a);
+    init(a,4);
     freeArray(a);
     return 0;
 }
