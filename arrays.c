@@ -29,32 +29,36 @@ void freeArray(Array*);
 /**************************************************************************/
 
 void init(Array* a, int capacity){
-    if(a->length > 0){
-        fprintf(stderr, "array is already initiallized!\n");
-        freeArray(a);
-        exit(1);
+    if (a->array != NULL){
+        fprintf(stderr, "Array is already initialized!\n");
+        return;
     }
-
-    if(capacity <= 0){
-        fprintf(stderr, "size can be 1 or more!\n");
-        freeArray(a);
+    if (capacity <= 0) {
+        fprintf(stderr, "Capacity must be greater than 0!\n");
         exit(1);
     }
     a->capacity = capacity;
-    a->array = (int*) malloc(capacity * sizeof(int));
-    memset(a->array, 0 , capacity);
     a->length = 0;
-}
-
-void insert(Array* a, int value) {
-    if (a == NULL || a->capacity <= 0) {
-        fprintf(stderr, "Array needs to be initialized!\n");
+    a->array = (int*) malloc(capacity * sizeof(int));
+    if (!a->array) {
+        fprintf(stderr, "Memory allocation failed!\n");
         exit(1);
     }
+    memset(a->array, 0, capacity * sizeof(int));
+
+}
+
+
+void insert(Array* a, int value) {
+    if (a == NULL || a->array == NULL) {
+        fprintf(stderr, "Array is not initialized!\n");
+        exit(1);
+    }
+
     if (a->length == a->capacity) {
         a->capacity *= 2;
         int* tmp = (int*) realloc(a->array, a->capacity * sizeof(int));
-        if (tmp == NULL) {
+        if (!tmp) {
             fprintf(stderr, "Memory Reallocation Failed!\n");
             freeArray(a);
             exit(1);
@@ -188,20 +192,12 @@ void freeArray(Array* a){
 int main(void){
     Array* a = (Array*) malloc(sizeof(Array));
     memset(a, 0, sizeof(Array));
-    Array* b = (Array*) malloc(sizeof(Array));
-    memset(b, 0, sizeof(Array));
-    init(a, 5);
-    init(b, 3);
-    for(int i = 1; i <= 5; i++){
+    init(a,3);
+    for(int i=1; i<=3; i++){
         insert(a,i);
     }
-     for(int i = 6; i <= 8; i++){
-        insert(b,i);
-    }
     print(a);
-    print(b);
-    Array* result = concat(a,b);
-    print(result);
+    init(a,3);
     freeArray(a);
     return 0;
 }
