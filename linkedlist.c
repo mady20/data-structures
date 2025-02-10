@@ -63,7 +63,35 @@ void insert(LinkedList* list, int index, int data){
     }
     list->length++;
 }
+void removeNode(LinkedList* list, int index){
+    if(index < 0 || index >= list->length) error("Index out of bounds!\n");
 
+    if(list->head == NULL) error("Empty List!\n");
+    
+    Node* temp;
+
+    if(index == 0){
+        temp = list->head;
+        list->head = list->head->next;
+        if(list->head == NULL){
+            list->tail = NULL;
+        }
+        free(temp);
+    }else{
+        Node* current = list->head;
+        for(int i = 0; i < index - 1; i++){
+            current = current->next;
+        }
+        temp = current->next;
+        current->next = current->next->next;
+        if (current->next == NULL) {
+            list->tail = current;
+        }
+        free(temp);
+        
+    }
+    list->length--;
+}
 void print(LinkedList* list) {
     Node* node = list->head;
     while (node != NULL) {
@@ -103,15 +131,10 @@ int main() {
     link(list, 3);
     link(list, 4);
     link(list, 5);
-    link(list, 6);
     print(list);
-    printf("%d\n", list->length);
-    insert(list, 7, 7);
+    removeNode(list,4);
     print(list);
-    printf("%d\n", list->length);
-    insert(list, 0, 0);
-    print(list);
-    printf("%d\n", list->length);
+    printf("%d\n", list->tail->data);
     freeList(list);
     return 0;
 }
