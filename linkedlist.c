@@ -16,7 +16,7 @@ typedef struct {
 
 
 void error(char* msg){
-    fprintf(stderr, msg);
+    fprintf(stderr, "%s", msg);
     exit(1);
 }
 void link(LinkedList* list, int data) {
@@ -37,7 +37,7 @@ void link(LinkedList* list, int data) {
 }
 
 void insert(LinkedList* list, int index, int data){
-    if(index < 0 || index > list->length) error("Index out of bounds!\n");
+    if(index < 0 || index >= list->length) error("Index out of bounds!\n");
 
     Node* node  = (Node*) malloc(sizeof(Node));
 
@@ -124,17 +124,32 @@ void freeList(LinkedList* list){
 }
 
 
-int main() {
+int* toArray(LinkedList* list){
+    int i = 0;
+    int* array = (int*) malloc(list->length * sizeof(int));
+    Node* current = list->head;
+    while(current != NULL){
+        *(array+i) = current->data;
+        current = current->next;
+        i++;
+    }
+    return array;
+}
+LinkedList* fromArray(int* array, int n ){    
     LinkedList* list = init();
-    link(list, 1);
-    link(list, 2);
-    link(list, 3);
-    link(list, 4);
-    link(list, 5);
-    print(list);
-    removeNode(list,4);
-    print(list);
-    printf("%d\n", list->tail->data);
-    freeList(list);
-    return 0;
+    for(int i = 0 ; i < n; i++){
+        link(list, array[i]);
+    }
+    return list;
+}
+
+Node* search(LinkedList* list, int target){
+    Node* current = list->head;
+    while(current != NULL){
+        if(current->data == target){
+            return current;
+        }
+        current = current->next;
+    }
+    return NULL;
 }
