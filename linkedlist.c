@@ -14,13 +14,15 @@ typedef struct {
     int length;
 } LinkedList;
 
+
+void error(char* msg){
+    fprintf(stderr, msg);
+    exit(1);
+}
 void link(LinkedList* list, int data) {
 
     Node* node = (Node*)malloc(sizeof(Node));
-    if (node == NULL) {
-        printf("Memory allocation failed!\n");
-        return;
-    }
+    if (node == NULL) error("Memory Allocation Failed!\n");
     node->data = data;
     node->next = NULL;
 
@@ -35,30 +37,31 @@ void link(LinkedList* list, int data) {
 }
 
 void insert(LinkedList* list, int index, int data){
-    list->length++;
+    if(index < 0 || index > list->length) error("Index out of bounds!\n");
 
+    Node* node  = (Node*) malloc(sizeof(Node));
+
+    if (node == NULL) error("Memory Allocation Failed!\n");
+    
+    node->data = data;
     if(index == 0){
-        Node* node  = (Node*) malloc(sizeof(Node));
         node->next = list->head;
         list->head = node;
-        return;
+        if(list->tail == NULL){
+            list->tail = node;
+        }
+    }else{
+        Node* current = list->head;
+        for(int i = 0; i < index - 1; i++){
+            current = current->next;
+        }
+        node->next = current->next;
+        current->next = node;
+        if(node->next == NULL){
+            list->tail = node;
+        }
     }
-
-    if(index >= list->length){
-        link(list,data);
-        return;
-    }
-    Node* node  = (Node*) malloc(sizeof(Node));
-    node = list->head;
-
-    Node* newNode = (Node*) malloc(sizeof(Node));
-    while(index-1 > 0){
-        node=node->next;
-        index--;
-    }
-    newNode->data = data;
-    newNode->next = node->next;
-    node->next = newNode;
+    list->length++;
 }
 
 void print(LinkedList* list) {
@@ -74,10 +77,7 @@ void print(LinkedList* list) {
 
 LinkedList* init(){
     LinkedList* list = (LinkedList*)malloc(sizeof(LinkedList));
-    if (list == NULL) {
-        printf("Memory allocation failed!\n");
-        exit(1);
-    }
+    if (list == NULL) error("Memory Allocation Failed!\n");
     list->head = NULL;
     list->tail = NULL;
     list->length = 0;
@@ -95,6 +95,7 @@ void freeList(LinkedList* list){
     free(list);
 }
 
+
 int main() {
     LinkedList* list = init();
     link(list, 1);
@@ -105,7 +106,7 @@ int main() {
     link(list, 6);
     print(list);
     printf("%d\n", list->length);
-    insert(list, 6, 7);
+    insert(list, 7, 7);
     print(list);
     printf("%d\n", list->length);
     insert(list, 0, 0);
