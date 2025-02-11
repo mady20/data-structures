@@ -37,7 +37,7 @@ void link(LinkedList* list, int data) {
 }
 
 void insert(LinkedList* list, int index, int data){
-    if(index < 0 || index >= list->length) error("Index out of bounds!\n");
+    if(index < 0 || index > list->length) error("Index out of bounds!\n");
 
     Node* node  = (Node*) malloc(sizeof(Node));
 
@@ -50,6 +50,11 @@ void insert(LinkedList* list, int index, int data){
         if(list->tail == NULL){
             list->tail = node;
         }
+    }else if(index == list->length){
+        if (list->tail != NULL) {
+            list->tail->next = node;
+        }
+        list->tail = node; 
     }else{
         Node* current = list->head;
         for(int i = 0; i < index - 1; i++){
@@ -57,9 +62,6 @@ void insert(LinkedList* list, int index, int data){
         }
         node->next = current->next;
         current->next = node;
-        if(node->next == NULL){
-            list->tail = node;
-        }
     }
     list->length++;
 }
@@ -93,6 +95,7 @@ void removeNode(LinkedList* list, int index){
     list->length--;
 }
 void print(LinkedList* list) {
+    if(list->head == NULL) error("Empty List!\n");
     Node* node = list->head;
     while (node != NULL) {
         printf("%d", node->data);
@@ -152,4 +155,38 @@ Node* search(LinkedList* list, int target){
         current = current->next;
     }
     return NULL;
+}
+
+void reverse(LinkedList* list){
+    if(list->head == NULL) error("Empty List!\n");
+    Node* curr = list->head;
+    Node* next = NULL;
+    Node* prev = NULL;
+    list->tail = curr;
+    while(curr->next != NULL){
+        next = curr->next;
+        curr->next = prev;
+        prev = curr;
+        curr = next;
+    }
+    curr->next = prev;
+    list->head = curr;
+}
+
+Node* getNode(LinkedList* list, int index){
+    if(index < 0 || index >= list->length) error("Index out of bounds!\n");
+    if(list->head == NULL) error("Empty List!\n");
+    
+    if(index == 0){
+        return list->head;
+    }
+    if(index == list->length -1){
+        return list->tail;
+    }
+    Node* curr = list->head;
+    for(int i = 0 ; i < index - 1; i++){
+        curr = curr->next;
+    }
+    return curr->next;
+
 }
